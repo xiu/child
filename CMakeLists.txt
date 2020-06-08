@@ -37,8 +37,18 @@ add_subdirectory(tests)
 
 if (USE_PROM)
   message("-- Build with prometheus: Yes (default)")
-  add_subdirectory(${VENDOR_DIR}/prometheus-client-c/prom/)
-  add_subdirectory(${VENDOR_DIR}/prometheus-client-c/promhttp/)
+  add_library(prom STATIC ${VENDOR_DIR}/prometheus-client-c/prom/src)
+  set_target_properties(prom PROPERTIES 
+    LINKER_LANGUAGE C
+  )
+  target_include_directories(prom PUBLIC ${VENDOR_DIR}/prometheus-client-c/prom/include)
+
+  add_library(promhttp STATIC ${VENDOR_DIR}/prometheus-client-c/promhttp/src)
+  set_target_properties(promhttp PROPERTIES 
+    LINKER_LANGUAGE C
+  )
+  target_include_directories(prom PUBLIC ${VENDOR_DIR}/prometheus-client-c/promhttp/include)
+
 else()
   message("-- Build with prometheus: No")
 endif()
