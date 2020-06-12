@@ -3,7 +3,7 @@ FROM gcc:7.5 as build
 ENV CMAKE_VERSION 3.16.8
 
 RUN apt-get update \
-    && apt-get -y install check \
+    && apt-get -y install check libmicrohttpd-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -22,7 +22,7 @@ RUN make
 FROM ubuntu:18.04
 
 RUN apt-get update \
-    && apt-get -y install libssl1.1 libmariadb3 libc6 netcat \
+    && apt-get -y install libssl1.1 libmariadb3 libc6 netcat libmicrohttpd12 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
