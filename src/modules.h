@@ -114,6 +114,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #define HOOK_LOADDB         0x1000
 #define HOOK_SAVEDB         0x2000
 #define HOOK_CONNECTED      0x4000
+#define HOOK_SASL           0x40000
 // next hook value = 0x40000 (1 << 18)
 
 #define MOD_STOP        0

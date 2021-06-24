@@ -62,6 +62,7 @@ int ParseLine(void)
                     "PRIVMSG",  m_privmsg,
                     "TOPIC", m_topic,
                     "UID", m_uid,
+                    "SASL", m_sasl,
                     "SID", m_sid,
                     "SJOIN", m_sjoin,
                 };
@@ -892,6 +893,14 @@ void m_ping (char *command)
 {
     SendRaw("PONG %s",command+1);
     RunHooks(HOOK_PING,NULL,NULL,NULL,NULL);
+}
+
+void m_sasl (char *sender, char *tail)
+{
+    char *parv[1];
+    parv[0] = sender;
+    parv[1] = tail;
+    RunHooks(HOOK_SASL, NULL, NULL, NULL, parv);
 }
 
 void m_protoctl(char *command, char *tail)
