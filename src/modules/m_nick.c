@@ -294,14 +294,13 @@ void nick_identify (Nick *nptr, User *uptr __unused, char *all)
         NoticeToUser(nptr,"Syntax: \2NICK IDENTIFY \037password\037\2");
         return;
     }   
-        
     user = find_user(nptr->nick);
     if (!user) {
         NoticeToUser(nptr,"You are not registered");
         return;
     }   
-        
-    if (user->authed == 1) {
+    
+    if (nptr->svid != NULL) {
         NoticeToUser(nptr,"You are already identified");
         return;
     }   
@@ -333,6 +332,7 @@ void nick_identify (Nick *nptr, User *uptr __unused, char *all)
     NoticeToUser(nptr,"You are now identified");
     nptr->loginattempts = 0;
     nptr->lasttry = 0;
+    nptr->svid = user->nick;
 
     if (user->email[0] == '\0')
         NoticeToUser(nptr,"Please set a valid email address with /msg C nick set email email@domain.xx");
@@ -426,8 +426,9 @@ void nick_register (Nick *nptr, User *uptr, char *all)
         NoticeToUser(nptr, "A password has been generated and sent to your specified e-mail address (this mean that the password you've specified doesn't work).");
     } else {        
         user->authed = 1;
-        SendRaw("SVSMODE %s +r",nptr->nick);
-        SendRaw("SVSMODE %s +d %s",nptr->nick,nptr->nick);
+        nptr->svid = user->nick;
+        SendRaw("SVSMODE %s +r", nptr->nick);
+        SendRaw("SVSMODE %s +d %s", nptr->nick, nptr->nick);
     }
 }
 
