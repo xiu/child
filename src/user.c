@@ -162,6 +162,7 @@ Nick *AddNick(char *nick, char *ident, char *host, char *uid, char *hiddenhost, 
     new_nick->ignoretime = 0;
     new_nick->loginattempts = 0;
     new_nick->lasttry = 0;
+    new_nick->svid[0] = '\0';
     LLIST_INIT(&new_nick->wchans);
 
     if (!HASHMAP_INSERT(core_get_nicks(), new_nick->nick, new_nick, NULL)) {

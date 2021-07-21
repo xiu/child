@@ -298,13 +298,13 @@ void nick_identify (Nick *nptr, User *uptr __unused, char *all)
     if (!user) {
         NoticeToUser(nptr,"You are not registered");
         return;
-    }   
-    
-    if (nptr->svid != NULL) {
+    }
+    if (nptr->svid[0] != '\0')
+    {
         NoticeToUser(nptr,"You are already identified");
         return;
-    }   
-        
+    }
+
     char *pass = md5_hash(arg3);
     if (Strcmp(pass,user->md5_pass)) {
         NoticeToUser(nptr,"Wrong password");
@@ -332,14 +332,14 @@ void nick_identify (Nick *nptr, User *uptr __unused, char *all)
     NoticeToUser(nptr,"You are now identified");
     nptr->loginattempts = 0;
     nptr->lasttry = 0;
-    nptr->svid = user->nick;
+    strncpy(nptr->svid, user->nick, SVIDLEN + 1);
 
     if (user->email[0] == '\0')
         NoticeToUser(nptr,"Please set a valid email address with /msg C nick set email email@domain.xx");
 
     user->lastseen = time(NULL);
-    SendRaw("SVS2MODE %s +r",nptr->nick);
-    SendRaw("SVS2MODE %s +d %s",nptr->nick,nptr->nick);
+    SendRaw("SVSMODE %s +r",nptr->nick);
+    SendRaw("SVSMODE %s +d %s",nptr->nick,nptr->nick);
     if (user->vhost[0] != '\0') {
         SendRaw("CHGHOST %s %s",nptr->nick,user->vhost);
         strncpy(nptr->hiddenhost, user->vhost, HOSTLEN);
@@ -426,9 +426,9 @@ void nick_register (Nick *nptr, User *uptr, char *all)
         NoticeToUser(nptr, "A password has been generated and sent to your specified e-mail address (this mean that the password you've specified doesn't work).");
     } else {        
         user->authed = 1;
-        nptr->svid = user->nick;
+        strncpy(nptr->svid, user->nick, SVIDLEN + 1);
         SendRaw("SVSMODE %s +r", nptr->nick);
-        SendRaw("SVSMODE %s +d %s", nptr->nick, nptr->nick);
+        SendRaw("SVSMODE %s +d %s", nptr->nick, nptr->nick); // TODO: replace with SVSLOGIN once sasl is released
     }
 }
 
