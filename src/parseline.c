@@ -846,13 +846,26 @@ void m_nick (char *sender, char *tail)
 
     uptr2 = find_user(newnick);
     if (uptr2) {
-        if (uptr && (find_link2(oldnick,newnick) || find_link2(newnick,oldnick)) && uptr->authed == 1) {
+        if (uptr && (find_link2(oldnick, newnick) || find_link2(newnick, oldnick)) && uptr->authed == 1)
+        {
             uptr->authed = 0;
             uptr->lastseen = time(NULL);
             uptr2->authed = 1;
             SendRaw("SVSMODE %s +r",newnick);
             uptr2->lastseen = time(NULL);
-        } else {
+        }
+        else if (!strcmp(newnick, nptr->svid))
+        {
+            if (uptr && uptr->authed == 1) {
+                uptr->authed = 0;
+                uptr->lastseen = time(NULL);
+            }
+            uptr2->authed = 1;
+            SendRaw("SVSMODE %s +r", newnick);
+            uptr2->lastseen = time(NULL);
+        }
+        else
+        {
             if (uptr && uptr->authed == 1)
                 SendRaw("SVSMODE %s -r",newnick);
             NoticeToUser(nptr,"This nick is registered. Please identify yourself or take another nick.");
